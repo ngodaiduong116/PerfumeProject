@@ -1,6 +1,7 @@
 ﻿using ePerfume.Data.Configurations;
 using ePerfume.Data.Entities;
 using ePerfume.Data.Extensions;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ePerfume.Data.EF
 {
-    public class EPerfumeDbContext : DbContext
+    public class EPerfumeDbContext : IdentityDbContext
     {
         public EPerfumeDbContext(DbContextOptions options) : base(options)
         {
