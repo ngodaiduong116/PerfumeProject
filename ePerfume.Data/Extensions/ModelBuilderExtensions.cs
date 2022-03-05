@@ -1,5 +1,6 @@
 ﻿using ePerfume.Data.Entities;
 using ePerfume.Data.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -125,6 +126,42 @@ namespace ePerfume.Data.Extensions
             modelBuilder.Entity<ProductInCategory>().HasData(
                 new ProductInCategory() {ProductId = 1, CategoryId = 1 }
             );
+
+            // any guid
+            var ADMIN_ID = new Guid("888584D2-49CD-4D36-88A2-170751C7DCA5");
+            // any guid, but nothing is against to use the same one
+            var ROLE_ID = new Guid("24973248-499C-4855-9D60-D56BD75B3BA5");
+
+            modelBuilder.Entity<Role>().HasData(new Role
+            {
+                Id = ROLE_ID,
+                Name = "admin",
+                Desccription = "Administrator role",
+                NormalizedName = "admin"
+            });
+
+            var hasher = new PasswordHasher<User>();
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = ADMIN_ID,
+                UserName = "admin",
+                NormalizedUserName = "admin",
+                Email = "ngodaiduong116@gmail.com",
+                NormalizedEmail = "ngodaiduong116@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "Qwe123456$"),
+                SecurityStamp = string.Empty,
+                FirstName = "Duong",
+                LastName =  "Ngo Dai",
+                Dob = new DateTime(1999,06,11)
+            });
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
+            {
+                RoleId = ROLE_ID,
+                UserId = ADMIN_ID
+            });
+
         }
     }
 }

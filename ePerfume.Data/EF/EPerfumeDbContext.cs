@@ -1,6 +1,7 @@
 ﻿using ePerfume.Data.Configurations;
 using ePerfume.Data.Entities;
 using ePerfume.Data.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ePerfume.Data.EF
 {
-    public class EPerfumeDbContext : IdentityDbContext
+    public class EPerfumeDbContext : IdentityDbContext<User,Role,Guid>
     {
         public EPerfumeDbContext(DbContextOptions options) : base(options)
         {
@@ -33,6 +34,15 @@ namespace ePerfume.Data.EF
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
             modelBuilder.ApplyConfiguration(new CartConfiguration());
+
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+
+            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaim");
+            modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogin").HasKey(x => x.UserId);
+            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("UserRole").HasKey(x => new {x.UserId, x.RoleId});
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaim");
+            modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("UserToken").HasKey(x => x.UserId);
 
             // Data seeding
             modelBuilder.Seed();

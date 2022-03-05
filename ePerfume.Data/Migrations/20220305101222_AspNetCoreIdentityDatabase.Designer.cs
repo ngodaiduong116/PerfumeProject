@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ePerfume.Data.EF;
 
 namespace ePerfume.Data.Migrations
 {
     [DbContext(typeof(EPerfumeDbContext))]
-    partial class EPerfumeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220305101222_AspNetCoreIdentityDatabase")]
+    partial class AspNetCoreIdentityDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,13 +94,6 @@ namespace ePerfume.Data.Migrations
                     b.HasKey("UserId", "RoleId");
 
                     b.ToTable("UserRole");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("888584d2-49cd-4d36-88a2-170751c7dca5"),
-                            RoleId = new Guid("24973248-499c-4855-9d60-d56bd75b3ba5")
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -384,7 +379,7 @@ namespace ePerfume.Data.Migrations
                     b.Property<DateTime>("OrderDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2022, 3, 5, 17, 55, 13, 557, DateTimeKind.Local).AddTicks(6423));
+                        .HasDefaultValue(new DateTime(2022, 3, 5, 17, 12, 21, 695, DateTimeKind.Local).AddTicks(7769));
 
                     b.Property<string>("ShipAddress")
                         .IsRequired()
@@ -479,7 +474,7 @@ namespace ePerfume.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2022, 3, 5, 17, 55, 13, 574, DateTimeKind.Local).AddTicks(8378),
+                            DateCreated = new DateTime(2022, 3, 5, 17, 12, 21, 712, DateTimeKind.Local).AddTicks(9519),
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             SeoAlias = "",
@@ -647,16 +642,6 @@ namespace ePerfume.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("24973248-499c-4855-9d60-d56bd75b3ba5"),
-                            ConcurrencyStamp = "8d1dd22b-d44b-40e8-a469-d57bf2eeba80",
-                            Desccription = "Administrator role",
-                            Name = "admin",
-                            NormalizedName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("ePerfume.Data.Entities.Transaction", b =>
@@ -764,27 +749,6 @@ namespace ePerfume.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("888584d2-49cd-4d36-88a2-170751c7dca5"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "cf03ecd2-ef0c-413d-91e4-29a29954e241",
-                            Dob = new DateTime(1999, 6, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "ngodaiduong116@gmail.com",
-                            EmailConfirmed = true,
-                            FirstName = "Duong",
-                            LastName = "Ngo Dai",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ngodaiduong116@gmail.com",
-                            NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBNyLaI9RN7IDlS3gYO4h9UjCntC1Q8EtbYsen6JIujfllG7FkKCEbSE2tZWXp3g3A==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("ePerfume.Data.Entities.Cart", b =>
