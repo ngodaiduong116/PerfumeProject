@@ -7,15 +7,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ePerfume.Data\ePerfume.Data.csproj" />
     <ProjectReference Include="..\ePerfume.Utilities\ePerfume.Utilities.csproj" />
-    <ProjectReference Include="..\ePerfume.ViewModels\ePerfume.ViewModels.csproj" />
-    <ProjectReference Include="..\ePerfume.WebApp\ePerfume.WebApp.csproj" />
   </ItemGroup>
 
 </Project>
