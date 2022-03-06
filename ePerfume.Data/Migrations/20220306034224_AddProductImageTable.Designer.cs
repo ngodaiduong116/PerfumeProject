@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ePerfume.Data.EF;
 
 namespace ePerfume.Data.Migrations
 {
     [DbContext(typeof(EPerfumeDbContext))]
-    partial class EPerfumeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220306034224_AddProductImageTable")]
+    partial class AddProductImageTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -477,7 +479,7 @@ namespace ePerfume.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2022, 3, 6, 15, 27, 54, 572, DateTimeKind.Local).AddTicks(8876),
+                            DateCreated = new DateTime(2022, 3, 6, 10, 42, 23, 205, DateTimeKind.Local).AddTicks(7027),
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             SeoAlias = "",
@@ -498,11 +500,11 @@ namespace ePerfume.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("FileSize")
-                        .HasColumnType("bigint");
+                    b.Property<int>("FileSize")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImagePath")
                         .IsRequired()
@@ -689,7 +691,7 @@ namespace ePerfume.Data.Migrations
                         new
                         {
                             Id = new Guid("24973248-499c-4855-9d60-d56bd75b3ba5"),
-                            ConcurrencyStamp = "e9163743-8f45-4eab-bfa1-8a2b20d5ea79",
+                            ConcurrencyStamp = "f85120c9-a89f-4e3b-9a32-8343bb68b2f4",
                             Desccription = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -807,7 +809,7 @@ namespace ePerfume.Data.Migrations
                         {
                             Id = new Guid("888584d2-49cd-4d36-88a2-170751c7dca5"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d32c0002-8fbc-482a-8502-e498e46a9187",
+                            ConcurrencyStamp = "3f78e9fc-fc96-4a3a-acd7-5a62f175bf85",
                             Dob = new DateTime(1999, 6, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "ngodaiduong116@gmail.com",
                             EmailConfirmed = true,
@@ -816,7 +818,7 @@ namespace ePerfume.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ngodaiduong116@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDeAWl83GYZmNOm2RCPHl0L84ED6yTKAUq0UcNeJFLArABFOgRqIvMc6qlmEmYtU+A==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBpD8lNmeKp6X93fKPk0SQR2tVta96+noARcyFYKSbZPBhvcPN73NAyD8yvHJ4lMig==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
