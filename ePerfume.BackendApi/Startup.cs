@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,10 @@ namespace ePerfume.BackendApi
         {
             services.AddDbContext<EPerfumeDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnectionString)));
             services.AddTransient<IPublicProductService, PublicProductService>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Swagger ePerfume", Version="v1"});
+            });
             services.AddControllersWithViews();
         }
 
@@ -51,7 +56,11 @@ namespace ePerfume.BackendApi
             app.UseRouting();
 
             app.UseAuthorization();
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json","swagger ePerfume");
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
