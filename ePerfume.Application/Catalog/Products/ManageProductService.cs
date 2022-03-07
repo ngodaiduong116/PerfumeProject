@@ -20,7 +20,7 @@ namespace ePerfume.Application.Catalog.Products
     {
         private readonly EPerfumeDbContext _context;
         private readonly IStorageService _filestorage;
-        public ManageProductService(EPerfumeDbContext context, FileStorageService storageService)
+        public ManageProductService(EPerfumeDbContext context, IStorageService storageService)
         {
             _context = context;
             _filestorage = storageService;
@@ -80,7 +80,8 @@ namespace ePerfume.Application.Catalog.Products
             }
 
             _context.Products.Add(product);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return product.Id;
         }
 
         public async Task<int> Delete(int productId)
@@ -149,6 +150,31 @@ namespace ePerfume.Application.Catalog.Products
                 Items = data
             };
             return pageResult;
+        }
+
+        public async Task<ProductViewModel> GetById(int productId, string languageId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId && x.LanguageId == languageId);
+            var productViewModel = new ProductViewModel()
+            {
+                Id = productId,
+                DateCreated = product.DateCreated,
+                Description = productTranslation != null ? productTranslation.Description : null,
+                LanguageId = productTranslation.LanguageId,
+                Details = productTranslation.Details != null ? productTranslation.Details : null,
+                Name = productTranslation.Details != null ? productTranslation.Details : null,
+                OriginalPrice = product.OriginalPrice,
+                Price = product.Price,
+                SeoAlias = productTranslation.SeoAlias != null ? productTranslation.SeoAlias : null,
+                SeoDescription = productTranslation.SeoDescription != null ? productTranslation.SeoDescription : null,
+                SeoTitle = productTranslation.SeoTitle != null ? productTranslation.SeoTitle : null,
+                Stock = product.Stock,
+                ViewCount = product.ViewCount
+
+            };
+
+            return productViewModel;
         }
 
         public Task<List<ProductImageViewModel>> GetListImage(int productId)

@@ -1,4 +1,5 @@
 using ePerfume.Application.Catalog.Products;
+using ePerfume.Application.Common;
 using ePerfume.Data.EF;
 using ePerfume.Utilities.Constants;
 using Microsoft.AspNetCore.Builder;
@@ -29,7 +30,9 @@ namespace ePerfume.BackendApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<EPerfumeDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnectionString)));
+            services.AddTransient<IManageProductService, ManageProductService>();
             services.AddTransient<IPublicProductService, PublicProductService>();
+            services.AddTransient<IStorageService, FileStorageService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Swagger ePerfume", Version="v1"});

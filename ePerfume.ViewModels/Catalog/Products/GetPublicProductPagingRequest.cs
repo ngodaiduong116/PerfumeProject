@@ -10,5 +10,6 @@ namespace ePerfume.ViewModels.Catalog.Products
     public class GetPublicProductPagingRequest : PagingRequestBase
     {
         public int? CategoryId { get; set; }
+        public string languageId { get; set; }
     }
 }

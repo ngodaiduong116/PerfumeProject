@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ePerfume.WebApp", "ePerfume.WebApp\ePerfume.WebApp.csproj", "{F291D89D-19A8-4EF3-B700-255A36F9BD97}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0FE9C209-4C56-4670-BDB9-43DAAB9F3A3A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.Solution Items", "0.Solution Items", "{0FE9C209-4C56-4670-BDB9-43DAAB9F3A3A}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
@@ -18,7 +18,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ePerfume.Utilities", "ePerf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ePerfume.ViewModels", "ePerfume.ViewModels\ePerfume.ViewModels.csproj", "{15198D62-B614-4F90-AAC7-C980E11E3258}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ePerfume.BackendApi", "ePerfume.BackendApi\ePerfume.BackendApi.csproj", "{A1728557-554C-4F13-B833-AE66BD015D53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ePerfume.BackendApi", "ePerfume.BackendApi\ePerfume.BackendApi.csproj", "{A1728557-554C-4F13-B833-AE66BD015D53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Infrastructure", "1.Infrastructure", "{33E7F75F-960E-492E-984F-B1688F527EC7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Domain", "2.Domain", "{02088D98-CC6A-4B4D-A86A-FEFC3BBFF962}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Hosts", "3.Hosts", "{CC610DF6-081A-4567-BF1D-720B662CD5CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +59,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F291D89D-19A8-4EF3-B700-255A36F9BD97} = {CC610DF6-081A-4567-BF1D-720B662CD5CA}
+		{439BBC15-23ED-48AA-80C8-123B6C84EC30} = {02088D98-CC6A-4B4D-A86A-FEFC3BBFF962}
+		{F027D42D-30E3-4211-895F-52D8516DA928} = {02088D98-CC6A-4B4D-A86A-FEFC3BBFF962}
+		{77CD34AA-3B76-4CC0-9D88-F1322F2658FB} = {33E7F75F-960E-492E-984F-B1688F527EC7}
+		{15198D62-B614-4F90-AAC7-C980E11E3258} = {33E7F75F-960E-492E-984F-B1688F527EC7}
+		{A1728557-554C-4F13-B833-AE66BD015D53} = {CC610DF6-081A-4567-BF1D-720B662CD5CA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BD0FAC57-3385-4496-BDE5-9D620B732135}
