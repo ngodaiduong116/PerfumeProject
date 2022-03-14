@@ -2,6 +2,7 @@
 using ePerfume.Data.EF;
 using ePerfume.Data.Entities;
 using ePerfume.Utilities.Exceptions;
+using ePerfume.ViewModels.Catalog.ProductImages;
 using ePerfume.ViewModels.Catalog.Products;
 using ePerfume.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
@@ -20,15 +21,42 @@ namespace ePerfume.Application.Catalog.Products
     {
         private readonly EPerfumeDbContext _context;
         private readonly IStorageService _filestorage;
+
         public ManageProductService(EPerfumeDbContext context, IStorageService storageService)
         {
             _context = context;
             _filestorage = storageService;
         }
 
-        public Task<int> AddImage(int productId, List<IFormFile> files)
+        public async Task<int> Update(ProductUpdateRequest request)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(request.Id);
+            var productTranslations = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == request.Id && x.LanguageId == request.LanguageId);
+            if (product == null || productTranslations == null)
+            {
+                throw new EPerfumeException($"Cannot find a product with id: {request.Id}");
+            }
+            productTranslations.Name = request.Name;
+            productTranslations.SeoAlias = request.SeoAlias;
+            productTranslations.SeoDescription = request.SeoDescription;
+            productTranslations.Details = request.Details;
+            productTranslations.SeoTitle = request.SeoTitle;
+            productTranslations.Description = request.Description;
+
+            // save Image
+            if (request.ThumbnailImage != null)
+            {
+                var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.IsDefault == true && x.ProductId == request.Id);
+                if (thumbnailImage != null)
+                {
+                    thumbnailImage.DateCreated = DateTime.Now;
+                    thumbnailImage.FileSize = request.ThumbnailImage.Length;
+                    thumbnailImage.ImagePath = await this.SaveFile(request.ThumbnailImage);
+                    _context.ProductImages.Update(thumbnailImage);
+                }
+            }
+
+            return await _context.SaveChangesAsync();
         }
 
         public async Task AddViewCount(int productId)
@@ -50,12 +78,12 @@ namespace ePerfume.Application.Catalog.Products
                 ProductTranslations = new List<ProductTranslation>()
                 {
                     new ProductTranslation()
-                    { 
-                        Name = request.Name, 
-                        Description = request.Description, 
-                        Details = request.Details, 
-                        SeoDescription = request.SeoDescription, 
-                        SeoAlias = request.SeoAlias, 
+                    {
+                        Name = request.Name,
+                        Description = request.Description,
+                        Details = request.Details,
+                        SeoDescription = request.SeoDescription,
+                        SeoAlias = request.SeoAlias,
                         SeoTitle = request.SeoTitle,
                         LanguageId = request.LanguageId
                     }
@@ -63,7 +91,7 @@ namespace ePerfume.Application.Catalog.Products
             };
 
             // save Image
-            if(request.ThumbnailImage != null)
+            if (request.ThumbnailImage != null)
             {
                 product.ProductImages = new List<ProductImage>()
                 {
@@ -92,13 +120,13 @@ namespace ePerfume.Application.Catalog.Products
             var images = await _context.ProductImages.Where(x => x.IsDefault == true && x.ProductId == productId).ToListAsync();
             if (images.Count > 0)
             {
-                foreach(var image in images)
+                foreach (var image in images)
                 {
                     await _filestorage.DeleteFileAsync(image.ImagePath);
                 }
             }
 
-            _context.Products.Remove(product);                        
+            _context.Products.Remove(product);
             return await _context.SaveChangesAsync();
         }
 
@@ -171,56 +199,9 @@ namespace ePerfume.Application.Catalog.Products
                 SeoTitle = productTranslation.SeoTitle != null ? productTranslation.SeoTitle : null,
                 Stock = product.Stock,
                 ViewCount = product.ViewCount
-
             };
 
             return productViewModel;
-        }
-
-        public Task<List<ProductImageViewModel>> GetListImage(int productId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> RemoveImage(int imageId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<int> Update(ProductUpdateRequest request)
-        {
-            var product = await _context.Products.FindAsync(request.Id);
-            var productTranslations = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == request.Id && x.LanguageId == request.LanguageId);
-            if (product == null || productTranslations == null)
-            {
-                throw new EPerfumeException($"Cannot find a product with id: {request.Id}");
-            }
-            productTranslations.Name = request.Name;
-            productTranslations.SeoAlias = request.SeoAlias;
-            productTranslations.SeoDescription = request.SeoDescription;
-            productTranslations.Details = request.Details;
-            productTranslations.SeoTitle = request.SeoTitle;
-            productTranslations.Description = request.Description;
-
-            // save Image
-            if (request.ThumbnailImage != null)
-            {
-                var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.IsDefault == true && x.ProductId == request.Id);
-                if (thumbnailImage != null)
-                {
-                    thumbnailImage.DateCreated = DateTime.Now;
-                    thumbnailImage.FileSize = request.ThumbnailImage.Length;
-                    thumbnailImage.ImagePath = await this.SaveFile(request.ThumbnailImage);
-                    _context.ProductImages.Update(thumbnailImage);
-                }
-            }
-
-            return await _context.SaveChangesAsync();
-        }
-
-        public Task<int> UpdateImage(int imageId, string caption, bool isDefault)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<bool> UpdatePrice(int productId, decimal newPrice)
@@ -251,6 +232,89 @@ namespace ePerfume.Application.Catalog.Products
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _filestorage.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
+        }
+
+        public async Task<int> AddImage(int productId, ProductImageCreateRequest request)
+        {
+            var productImage = new ProductImage()
+            {
+                Caption = request.Caption,
+                DateCreated = DateTime.Now,
+                IsDefault = request.IsDefault,
+                ProductId = productId,
+                SoftOrder = request.SoftOrder,
+            };
+            if (request.ImageFile != null)
+            {
+                productImage.ImagePath = await this.SaveFile(request.ImageFile);
+                productImage.FileSize = request.ImageFile.Length;
+            }
+            _context.ProductImages.Add(productImage);
+            await _context.SaveChangesAsync();
+            return productImage.Id;
+        }
+
+        public async Task<int> RemoveImage(int imageId)
+        {
+            var productIamge = await _context.ProductImages.FindAsync(imageId);
+            if (productIamge != null)
+            {
+                throw new EPerfumeException($"Cannot not fint an image with id {imageId}");
+            }
+            _context.ProductImages.Remove(productIamge);
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> UpdateImage(int imageId, ProductImageUpdateRequest request)
+        {
+            var productImage = await _context.ProductImages.FindAsync(imageId);
+            if (productImage == null)
+            {
+                throw new EPerfumeException($"Cannot find an image with id {imageId}");
+            }
+            if (request.ImageFile != null)
+            {
+                productImage.ImagePath = await this.SaveFile(request.ImageFile);
+                productImage.FileSize = request.ImageFile.Length;
+            }
+            _context.ProductImages.Update(productImage);
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<ProductImageViewModel>> GetListImages(int productId)
+        {
+            return await _context.ProductImages.Where(x => x.ProductId == productId).Select(z => new ProductImageViewModel()
+            {
+                Caption = z.Caption,
+                DateCreated = z.DateCreated,
+                FileSize = z.FileSize,
+                Id = z.Id,
+                ImagePath = z.ImagePath,
+                IsDefault = z.IsDefault,
+                ProductId = productId,
+                SoftOrder = z.SoftOrder
+            }).ToListAsync();
+        }
+
+        public async Task<ProductImageViewModel> GetImageById(int imageId)
+        {
+            var productImage = await _context.ProductImages.FindAsync(imageId);
+            if (productImage == null)
+            {
+                throw new EPerfumeException($"Cannot find an image with id {imageId}");
+            }
+            var viewModel = new ProductImageViewModel()
+            {
+                Caption = productImage.Caption,
+                DateCreated = productImage.DateCreated,
+                FileSize = productImage.FileSize,
+                Id = productImage.Id,
+                ImagePath = productImage.ImagePath,
+                IsDefault = productImage.IsDefault,
+                ProductId = productImage.ProductId,
+                SoftOrder = productImage.SoftOrder
+            };
+            return viewModel;
         }
     }
 }

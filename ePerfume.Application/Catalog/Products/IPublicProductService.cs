@@ -10,7 +10,6 @@ namespace ePerfume.Application.Catalog.Products
 {
     public interface IPublicProductService
     {
-        public Task<PageResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request);
-        public Task<List<ProductViewModel>> GetAll(string languaId);
+        public Task<PageResult<ProductViewModel>> GetAllByCategoryId(string languaeId, GetPublicProductPagingRequest request);
     }
 }
