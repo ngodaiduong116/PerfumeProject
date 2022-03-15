@@ -45,6 +45,7 @@ namespace ePerfume.BackendApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger ePerfume", Version = "v1" });
             });
+            services.Configure<PasswordHasherOptions>(options => options.CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV2);
             services.AddControllersWithViews();
         }
 

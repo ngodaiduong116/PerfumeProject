@@ -1,4 +1,5 @@
-﻿using ePerfume.Data.Entities;
+﻿using ePerfume.Data.EF;
+using ePerfume.Data.Entities;
 using ePerfume.Utilities.Exceptions;
 using ePerfume.ViewModels.System.Users;
 using Microsoft.AspNetCore.Identity;
@@ -19,14 +20,16 @@ namespace ePerfume.Application.System.Users
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<Role> _roleManager;
+        public readonly IPasswordHasher<User> _passwordHasher;
         private readonly IConfiguration _config;
 
-        public UserService(UserManager<User> userManager, SignInManager<User> signInmanager, RoleManager<Role> roleManager, IConfiguration config)
+        public UserService(UserManager<User> userManager, SignInManager<User> signInmanager, RoleManager<Role> roleManager, IConfiguration config, IPasswordHasher<User> passwordHasher)
         {
             _userManager = userManager;
             _signInManager = signInmanager;
             _roleManager = roleManager;
             _config = config;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<string> Authenticate(LoginRequest request)
@@ -71,6 +74,8 @@ namespace ePerfume.Application.System.Users
                 UserName = request.UserName,
                 PhoneNumber = request.PhoneNumber,
             };
+            user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
+            user.SecurityStamp = Guid.NewGuid().ToString();
             var result = await _userManager.CreateAsync(user);
             if (result.Succeeded)
             {
