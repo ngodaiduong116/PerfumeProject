@@ -27,6 +27,7 @@ namespace ePerfume.BackendApi.Controllers
                 return BadRequest(ModelState);
             }
             var resultToken = await _userservice.Authenticate(request);
+            var checkToken = resultToken;
             if (string.IsNullOrEmpty(resultToken))
             {
                 return BadRequest("Username or password is incorrect.");

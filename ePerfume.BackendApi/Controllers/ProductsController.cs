@@ -1,6 +1,7 @@
 ﻿using ePerfume.Application.Catalog.Products;
 using ePerfume.ViewModels.Catalog.ProductImages;
 using ePerfume.ViewModels.Catalog.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace ePerfume.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IManageProductService _manageProductService;
