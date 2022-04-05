@@ -4,6 +4,9 @@ using ePerfume.Application.System.Users;
 using ePerfume.Data.EF;
 using ePerfume.Data.Entities;
 using ePerfume.Utilities.Constants;
+using ePerfume.ViewModels.System.Users;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,11 +46,13 @@ namespace ePerfume.BackendApi
             services.AddTransient<SignInManager<User>, SignInManager<User>>();
             services.AddTransient<RoleManager<Role>, RoleManager<Role>>();
             services.AddTransient<IUserService, UserService>();
-            services.AddControllers();
+            services.AddTransient<IValidator<LoginRequest>, LoginRequestValidate>();
+            services.AddControllers().AddFluentValidation();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger ePerfume", Version = "v1" });
-                c.AddSecurityDefinition("Bearer",new OpenApiSecurityScheme {
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
                     Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n
                     Enter 'Bear' [space] and then your token in the text input below
                     \r\n\r\n Example: 'Bearer 12345abcdef'",
@@ -56,7 +61,7 @@ namespace ePerfume.BackendApi
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer"
                 });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement() 
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
                     {
                         new OpenApiSecurityScheme

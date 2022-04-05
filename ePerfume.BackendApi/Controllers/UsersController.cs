@@ -32,7 +32,7 @@ namespace ePerfume.BackendApi.Controllers
             {
                 return BadRequest("Username or password is incorrect.");
             }
-            return Ok(new { tokrn = resultToken });
+            return Ok(new { token = resultToken });
         }
 
         [HttpPost("register")]

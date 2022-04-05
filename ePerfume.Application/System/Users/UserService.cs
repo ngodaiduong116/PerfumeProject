@@ -51,6 +51,8 @@ namespace ePerfume.Application.System.Users
                 new Claim(ClaimTypes.GivenName, user.FirstName),
                 new Claim(ClaimTypes.Role, string.Join(";", roles))
             };
+            var checkKey = _config["Tokens:Key"];
+            var checkIssuser = _config["Tokens:Issuser"];
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
