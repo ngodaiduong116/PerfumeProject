@@ -1,10 +1,13 @@
 using ePerfume.Application.Catalog.Products;
 using ePerfume.Application.Common;
+using ePerfume.Application.System.Users;
 using ePerfume.Data.EF;
+using ePerfume.Data.Entities;
 using ePerfume.Utilities.Constants;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,13 +33,19 @@ namespace ePerfume.BackendApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<EPerfumeDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnectionString)));
+            services.AddIdentity<User, Role>().AddEntityFrameworkStores<EPerfumeDbContext>().AddDefaultTokenProviders();
             services.AddTransient<IManageProductService, ManageProductService>();
             services.AddTransient<IPublicProductService, PublicProductService>();
             services.AddTransient<IStorageService, FileStorageService>();
+            services.AddTransient<UserManager<User>, UserManager<User>>();
+            services.AddTransient<SignInManager<User>, SignInManager<User>>();
+            services.AddTransient<RoleManager<Role>, RoleManager<Role>>();
+            services.AddTransient<IUserService, UserService>();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "Swagger ePerfume", Version="v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger ePerfume", Version = "v1" });
             });
+            services.Configure<PasswordHasherOptions>(options => options.CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV2);
             services.AddControllersWithViews();
         }
 
@@ -62,7 +71,7 @@ namespace ePerfume.BackendApi
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json","swagger ePerfume");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "swagger ePerfume");
             });
             app.UseEndpoints(endpoints =>
             {
