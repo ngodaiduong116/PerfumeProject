@@ -47,7 +47,8 @@ namespace ePerfume.BackendApi
             services.AddTransient<RoleManager<Role>, RoleManager<Role>>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidate>();
-            services.AddControllers().AddFluentValidation();
+            services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidate>();
+            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidate>());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger ePerfume", Version = "v1" });
