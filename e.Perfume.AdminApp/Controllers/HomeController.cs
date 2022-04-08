@@ -17,7 +17,6 @@ namespace e.Perfume.AdminApp.Controllers
         {
             _logger = logger;
         }
-
         public IActionResult Index()
         {
             return View();
