@@ -1,6 +1,8 @@
 ﻿using e.Perfume.AdminApp.Services;
 using ePerfume.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
@@ -25,14 +27,16 @@ namespace e.Perfume.AdminApp.Controllers
             _userApi = userApi;
             _configuration = configuration;
         }
+
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
 
@@ -46,9 +50,10 @@ namespace e.Perfume.AdminApp.Controllers
             var authProperties = new AuthenticationProperties
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = true
+                IsPersistent = false
             };
-            return View(token);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, authProperties);
+            return RedirectToAction("Index", "Home");
         }
 
         private ClaimsPrincipal ValidateToken(string jwttoken)
@@ -63,9 +68,15 @@ namespace e.Perfume.AdminApp.Controllers
             validationParameters.ValidIssuer = _configuration["Tokens:Issuser"];
             validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
 
-            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwttoken,validationParameters, out validateToken);
+            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwttoken, validationParameters, out validateToken);
 
             return principal;
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "User");
         }
     }
 }

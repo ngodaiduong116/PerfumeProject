@@ -1,8 +1,10 @@
 ﻿using ePerfume.Data.EF;
 using ePerfume.Data.Entities;
 using ePerfume.Utilities.Exceptions;
+using ePerfume.ViewModels.Common;
 using ePerfume.ViewModels.System.Users;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -49,7 +51,8 @@ namespace ePerfume.Application.System.Users
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.FirstName),
-                new Claim(ClaimTypes.Role, string.Join(";", roles))
+                new Claim(ClaimTypes.Role, string.Join(";", roles)),
+                new Claim(ClaimTypes.Name, request.UserName)
             };
             var checkKey = _config["Tokens:Key"];
             var checkIssuser = _config["Tokens:Issuser"];
@@ -84,6 +87,36 @@ namespace ePerfume.Application.System.Users
                 return true;
             }
             return false;
+        }
+
+        public async Task<PageResult<UserVm>> GetUserPaging(GetUserPagingRequest request)
+        {
+            var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(request.KeyWord))
+            {
+                query = query.Where(x => x.UserName.Contains(request.KeyWord) || x.PhoneNumber.Contains(request.KeyWord));
+            }
+
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new UserVm()
+                {
+                    Email = x.Email,
+                    UserName = x.UserName,
+                    FirstName = x.FirstName,
+                    Id = x.Id,
+                    PhoneNumber = x.PhoneNumber,
+                    LastName = x.LastName,
+                }).ToListAsync();
+
+            var pageResult = new PageResult<UserVm>()
+            {
+                TotalRecord = totalRow,
+                Items = data
+            };
+
+            return pageResult;
         }
     }
 }
