@@ -1,4 +1,5 @@
-﻿using ePerfume.ViewModels.System.Users;
+﻿using ePerfume.ViewModels.Common;
+using ePerfume.ViewModels.System.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace ePerfume.Application.System.Users
         Task<string> Authenticate(LoginRequest request);
 
         Task<bool> Register(RegisterRequest request);
+
+        Task<PageResult<UserVm>> GetUserPaging(GetUserPagingRequest request);
     }
 }

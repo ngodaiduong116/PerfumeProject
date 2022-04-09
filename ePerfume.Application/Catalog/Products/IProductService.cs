@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ePerfume.Application.Catalog.Products
 {
-    public interface IManageProductService
+    public interface IProductService
     {
         Task<int> Create(ProductCreateRequest request);
 
@@ -37,5 +37,7 @@ namespace ePerfume.Application.Catalog.Products
         Task<ProductImageViewModel> GetImageById(int imageId);
 
         Task<ProductViewModel> GetById(int productId, string languageId);
+
+        public Task<PageResult<ProductViewModel>> GetAllByCategoryId(string languaeId, GetPublicProductPagingRequest request);
     }
 }
